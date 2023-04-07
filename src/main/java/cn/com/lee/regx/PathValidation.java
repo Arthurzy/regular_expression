@@ -2,7 +2,6 @@ package cn.com.lee.regx;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,10 +19,15 @@ public class PathValidation
 	 */
 	public static boolean isValidatePath(String path) {
 		if(path==null) {
+			System.out.println("isValidatePath = null" );
 			return false;
 		}
-		String pattern = ".*0-all_data.*";
-		return Pattern.matches(pattern, path) || isValidateDatePath(path, null) || isValidMailPath(path);
+		String pattern = ".*/0-all_data/.*";
+		boolean isValidatePath = (Pattern.matches(pattern, path) 
+				|| isValidateDatePath(path, null) 
+				|| isValidMailPath(path));
+		System.out.println("isValidatePath = " + isValidatePath);
+		return isValidatePath;
 	}
 
 	/**
@@ -38,7 +42,7 @@ public class PathValidation
 		if (dateFormat == null || "".equals(dateFormat)) {
 			dateFormat = "yyyy-MM-dd";
 		}
-		String datePathPattern = ".*\\d{4}-\\d{2}-\\d{2}.*";
+		String datePathPattern = ".*/\\d{4}-\\d{2}-\\d{2}/.*";
 		String datePattern = "\\d{4}-\\d{2}-\\d{2}";
 		if (Pattern.matches(datePathPattern, path)) {
 			Pattern p = Pattern.compile(datePattern);
@@ -50,8 +54,7 @@ public class PathValidation
 				SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 				sdf.setLenient(false);
 				try {
-					Date d = sdf.parse(dateString);
-					System.out.println(d);
+					sdf.parse(dateString);
 					isValidPath = true;
 				} catch (ParseException e) {
 					System.out.println(e.getMessage());
@@ -72,7 +75,7 @@ public class PathValidation
 	 */
 	private static boolean isValidMailPath(String path) {
 		boolean isValidPath = true;
-		String datePathPattern = ".*mail\\d{4}\\d{2}\\d{2}-\\d{6}.*";
+		String datePathPattern = ".*/mail\\d{4}\\d{2}\\d{2}-\\d{6}-.*/.*";
 		String datePattern = "\\d{4}\\d{2}\\d{2}-\\d{6}";
 		if (Pattern.matches(datePathPattern, path)) {
 			Pattern p = Pattern.compile(datePattern);
@@ -85,7 +88,6 @@ public class PathValidation
 				sdf.setLenient(false);
 				try {
 					sdf.parse(dateString);
-//					System.out.println(d);
 					isValidPath = true;
 				} catch (ParseException e) {
 					System.out.println(e.getMessage());
